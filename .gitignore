@@ -1,0 +1,21 @@
+# Node
+node_modules
+.next
+.env
+.env.local
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Go
+bin/
+*.exe
+*.log
+*.out
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Docker
+db_data/
