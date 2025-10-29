@@ -1,24 +1,27 @@
-// apps/web/src/lib/auth.ts
-import { betterAuth } from "better-auth";
-import { Pool } from "pg";
+import { db } from "@/db/drizzle";
 
-// Create PostgreSQL connection pool
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { nextCookies } from "better-auth/next-js";
+import { schema } from "@/db/schema";
 
 export const auth = betterAuth({
-    database: pool,
+    database: drizzleAdapter(db, {
+        provider: "pg",
+        schema,
+    }),
     
     emailAndPassword: {
         enabled: true,
-        requireEmailVerification: false, // Set to true in production
+        requireEmailVerification: false,
     },
 
     session: {
-        expiresIn: 60 * 60 * 24 * 7, // 7 days
-        updateAge: 60 * 60 * 24, // 1 day
+        expiresIn: 60 * 60 * 24 * 7,
+        updateAge: 60 * 60 * 24,
     },
+
+    plugins: [nextCookies()],
 
     // Optional: Add social providers later
     // socialProviders: {
@@ -32,13 +35,3 @@ export const auth = betterAuth({
     //   },
     // },
 });
-
-// apps/web/src/lib/auth-client.ts
-import { createAuthClient } from "better-auth/react";
-
-export const authClient = createAuthClient({
-    baseURL: process.env.NEXT_PUBLIC_AUTH_URL || "http://localhost:3000",
-});
-
-// Export useful hooks
-export const { useSession, signIn, signOut, signUp } = authClient;
