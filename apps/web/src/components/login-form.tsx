@@ -24,6 +24,8 @@ import { signIn } from "@/server/users";
 import { useState } from "react";
 import { AlertCircleIcon } from "lucide-react";
 import { Alert, AlertTitle } from "./ui/alert";
+import { toast } from "sonner";
+import { redirect } from "next/navigation";
 
 const formSchema = z.object({
   email: z
@@ -54,15 +56,13 @@ export function LoginForm({
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      setIsLoading(true);
-      setError(null);
-      await signIn(values);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
-      console.error(err);
-    } finally {
-      setIsLoading(false);
+    const { success, message } = await signIn(values);
+
+    if (success) {
+      toast.success(message);
+      redirect("/dashboard");
+    } else {
+      toast.error(message);
     }
   }
 

@@ -24,6 +24,8 @@ import { signUp } from "@/server/users";
 import { useState } from "react";
 import { AlertCircleIcon } from "lucide-react";
 import { Alert, AlertTitle } from "./ui/alert";
+import { toast } from "sonner";
+import { redirect } from "next/navigation";
 
 const formSchema = z.object({
   name: z
@@ -66,15 +68,13 @@ export function SignupForm({
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      setIsLoading(true);
-      setError(null);
-      await signUp(values);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Signup failed");
-      console.error(err);
-    } finally {
-      setIsLoading(false);
+    const { success, message } = await signUp(values);
+
+    if (success) {
+      toast.success(message);
+      redirect("/dashboard");
+    } else {
+      toast.error(message);
     }
   }
 
