@@ -35,6 +35,26 @@ export const signIn = async (body: Body): Promise<AuthResult> => {
     }
 }
 
+export const signInBySocial = async (): Promise<AuthResult> => {
+    try {
+        await auth.api.signInSocial({
+            body: {
+                provider: "google",
+            },
+        });
+
+        return {
+            success: true,
+            message: "Signed in successfully!",
+        }
+    } catch (error) {
+        return {
+            success: false,
+            message: error instanceof Error ? error.message : "Sign in failed",
+        };
+    }
+}
+
 export const signUp = async (body: SignUpBody): Promise<AuthResult> => {
     try {
         await auth.api.signUpEmail({ 
@@ -42,7 +62,8 @@ export const signUp = async (body: SignUpBody): Promise<AuthResult> => {
             headers: await headers()
         });
         return {
-            success: true
+            success: true,
+            message: "Signed up successfully!",
         };
     } catch (error) {
         return {

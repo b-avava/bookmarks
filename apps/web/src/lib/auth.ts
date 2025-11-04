@@ -10,10 +10,27 @@ export const auth = betterAuth({
         provider: "pg",
         schema,
     }),
+    socialProviders: {
+        google: {
+            clientId: process.env.GOOGLE_CLIENT_ID!,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+        },
+    },
     
     emailAndPassword: {
         enabled: true,
         requireEmailVerification: false,
+    },
+
+    emailVerification: {
+        // sendVerificationEmail: async ({ user, url }) => {
+        //     await sendEmail({
+        //         to: user.email,
+        //         subject: "Verify your email address",
+        //         text: `Click the link to verify your email: ${url}`,
+        //     });
+        // },
+        // sendOnSignIn: true,
     },
 
     session: {
